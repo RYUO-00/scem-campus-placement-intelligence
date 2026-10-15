@@ -1,0 +1,1 @@
+export default function StatCard({label,value,detail,icon='↗',tone='accent'}){return <div className="stat-card"><div className={`stat-icon tone-${tone}`}>{icon}</div><div className="stat-copy"><span>{label}</span><strong>{value??'—'}</strong>{detail&&<small>{detail}</small>}</div></div>;}

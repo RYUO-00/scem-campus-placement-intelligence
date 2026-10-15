@@ -1,0 +1,19 @@
+{
+  "name": "scem-campus-placement-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Academic prototype for campus placement and eligibility management at SCEM.",
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "dev": "concurrently -k -n api,web,ai -c blue,green,magenta \"npm:dev:api\" \"npm:dev:web\" \"npm:dev:ai\"",
+    "dev:api": "npm --workspace backend run dev",
+    "dev:web": "npm --workspace frontend run dev",
+    "dev:ai": "python ai-service/run.py",
+    "build": "npm --workspace frontend run build",
+    "test": "npm --workspace backend test"
+  },
+  "devDependencies": { "concurrently": "^9.1.2" },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}
