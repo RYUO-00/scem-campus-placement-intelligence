@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -9,7 +10,10 @@ else:
     venv_python = service / ".venv" / "bin" / "python"
 
 if venv_python.exists() and Path(sys.executable).resolve() != venv_python.resolve():
-    os.execv(str(venv_python), [str(venv_python), "-m", "uvicorn", "app.main:app", "--reload", "--app-dir", str(service), "--port", "8000"])
+    raise SystemExit(subprocess.call([
+        str(venv_python), "-m", "uvicorn", "app.main:app", "--reload",
+        "--app-dir", str(service), "--port", "8000",
+    ]))
 
 sys.path.insert(0, str(service))
 try:
