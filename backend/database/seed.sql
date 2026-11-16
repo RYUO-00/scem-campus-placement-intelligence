@@ -22,7 +22,49 @@ FROM (VALUES
  ('DEMO2026MR002','Arjun Nayak','MECH-ROBOTICS',8.12,0,2026,'+91 90000 00012','arjun.nayak@demo.example')
 ) AS v(reg,name,code,cgpa,backlogs,grad,phone,email)
 JOIN branches b ON b.branch_code = v.code
-ON CONFLICT (registration_number) DO NOTHING;
+ON CONFLICT DO NOTHING;
+
+-- BEGIN FICTIONAL 4SF DEMO ROSTER
+-- Fictional demonstration data only; these identities are not actual SCEM students.
+-- Each confirmed registration department has four 2024 records and two 2025 records.
+-- RE stays out until its registration department code is confirmed against a canonical branch.
+INSERT INTO students (registration_number, full_name, branch_id, cgpa, active_backlogs, graduation_year, phone, contact_email)
+SELECT v.reg, v.name, b.branch_id, v.cgpa, 0, v.grad, v.phone, v.email
+FROM (VALUES
+ ('4SF24IS001','Aditi Bhandary','ISE',8.21,2028,'+91 90000 01001','aditi.bhandary@demo.example'),
+ ('4SF24IS002','Rishabh Prabhu','ISE',7.92,2028,'+91 90000 01002','rishabh.prabhu@demo.example'),
+ ('4SF24IS003','Kavya Kulal','ISE',8.44,2028,'+91 90000 01003','kavya.kulal@demo.example'),
+ ('4SF24IS004','Adwait Shenoy','ISE',7.76,2028,'+91 90000 01004','adwait.shenoy@demo.example'),
+ ('4SF25IS001','Ira Pai','ISE',8.05,2029,'+91 90000 01005','ira.pai@demo.example'),
+ ('4SF25IS002','Devendra Rao','ISE',7.69,2029,'+91 90000 01006','devendra.rao@demo.example'),
+ ('4SF24CS001','Ananya Hegde','CSE',8.46,2028,'+91 90000 01007','ananya.hegde@demo.example'),
+ ('4SF24CS002','Aarav Shetty','CSE',7.88,2028,'+91 90000 01008','aarav.shetty@demo.example'),
+ ('4SF24CS003','Nisha Kamat','CSE',8.71,2028,'+91 90000 01009','nisha.kamat@demo.example'),
+ ('4SF24CS004','Vihaan Bhat','CSE',7.95,2028,'+91 90000 01010','vihaan.bhat@demo.example'),
+ ('4SF25CS001','Myra Dsouza','CSE',8.13,2029,'+91 90000 01011','myra.dsouza@demo.example'),
+ ('4SF25CS002','Karthik Acharya','CSE',7.82,2029,'+91 90000 01012','karthik.acharya@demo.example'),
+ ('4SF24AI001','Sanvi Nair','CSE-AIML',8.75,2028,'+91 90000 01013','sanvi.nair@demo.example'),
+ ('4SF24AI002','Reyansh Rao','CSE-AIML',8.02,2028,'+91 90000 01014','reyansh.rao@demo.example'),
+ ('4SF24AI003','Tanya Amin','CSE-AIML',8.66,2028,'+91 90000 01015','tanya.amin@demo.example'),
+ ('4SF24AI004','Omkar Kini','CSE-AIML',7.77,2028,'+91 90000 01016','omkar.kini@demo.example'),
+ ('4SF25AI001','Aanya Pai','CSE-AIML',8.36,2029,'+91 90000 01017','aanya.pai@demo.example'),
+ ('4SF25AI002','Pranav Shetty','CSE-AIML',7.91,2029,'+91 90000 01018','pranav.shetty@demo.example'),
+ ('4SF24ME001','Riya Nayak','MECH-ROBOTICS',8.17,2028,'+91 90000 01019','riya.nayak@demo.example'),
+ ('4SF24ME002','Kabir Baliga','MECH-ROBOTICS',7.74,2028,'+91 90000 01020','kabir.baliga@demo.example'),
+ ('4SF24ME003','Ishan Prabhu','MECH-ROBOTICS',8.57,2028,'+91 90000 01021','ishan.prabhu@demo.example'),
+ ('4SF24ME004','Nandini Shenoy','MECH-ROBOTICS',8.00,2028,'+91 90000 01022','nandini.shenoy@demo.example'),
+ ('4SF25ME001','Veer Kamat','MECH-ROBOTICS',8.28,2029,'+91 90000 01023','veer.kamat@demo.example'),
+ ('4SF25ME002','Diya Hegde','MECH-ROBOTICS',7.83,2029,'+91 90000 01024','diya.hegde@demo.example'),
+ ('4SF24EC001','Zoya Fernandes','ECE',8.52,2028,'+91 90000 01025','zoya.fernandes@demo.example'),
+ ('4SF24EC002','Arjun Bhandary','ECE',8.06,2028,'+91 90000 01026','arjun.bhandary@demo.example'),
+ ('4SF24EC003','Shruti Kamath','ECE',8.67,2028,'+91 90000 01027','shruti.kamath@demo.example'),
+ ('4SF24EC004','Neel Ahmed','ECE',7.98,2028,'+91 90000 01028','neel.ahmed@demo.example'),
+ ('4SF25EC001','Avni Dsouza','ECE',7.93,2029,'+91 90000 01029','avni.dsouza@demo.example'),
+ ('4SF25EC002','Rohan Rao','ECE',8.14,2029,'+91 90000 01030','rohan.rao@demo.example')
+) AS v(reg,name,code,cgpa,grad,phone,email)
+JOIN branches b ON b.branch_code = v.code
+ON CONFLICT DO NOTHING;
+-- END FICTIONAL 4SF DEMO ROSTER
 
 INSERT INTO academic_records(student_id, semester, sgpa, backlogs)
 SELECT s.student_id, sem, GREATEST(0, LEAST(10, s.cgpa + delta)), CASE WHEN s.active_backlogs > 0 AND sem = 7 THEN 1 ELSE 0 END

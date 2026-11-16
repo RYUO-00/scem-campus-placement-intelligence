@@ -17,6 +17,6 @@ test('incomplete academics, closed drive, and expired deadline fail safely',()=>
  const result=evaluateEligibility({branch_id:'cse-id',cgpa:null,active_backlogs:null},{...drive,status:'closed',application_deadline:'2020-01-01'},[]);
  assert.equal(result.eligible,false);assert.equal(result.reasons.length,4);
 });
-test('application status transitions reject terminal records',()=>{
- assert.deepEqual(applicationTransitions.rejected,[]);assert.ok(applicationTransitions.applied.includes('under_review'));assert.ok(!applicationTransitions.offered.includes('applied'));
+test('rejected applications can return to review while offers remain terminal',()=>{
+ assert.deepEqual(applicationTransitions.rejected,['under_review']);assert.ok(applicationTransitions.applied.includes('under_review'));assert.ok(!applicationTransitions.offered.includes('applied'));
 });

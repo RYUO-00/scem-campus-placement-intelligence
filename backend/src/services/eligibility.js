@@ -16,5 +16,5 @@ export const applicationTransitions = {
   under_review: ['shortlisted','rejected','interview'],
   shortlisted: ['interview','rejected'],
   interview: ['shortlisted','rejected','offered'],
-  rejected: [], offered: [], withdrawn: []
+  rejected: ['under_review'], offered: [], withdrawn: []
 };

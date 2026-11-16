@@ -6,9 +6,10 @@ export async function authenticate(req, res, next) {
   if (!token) return res.status(401).json({ error: 'Please sign in to continue.' });
   try {
     const claims = jwt.verify(token, process.env.JWT_SECRET);
-    const { rows } = await pool.query('SELECT user_id,name,email,role,is_active FROM users WHERE user_id=$1', [claims.sub]);
+    const { rows } = await pool.query('SELECT user_id,name,email,role,is_active,session_version FROM users WHERE user_id=$1', [claims.sub]);
     const user = rows[0];
     if (!user?.is_active) return res.status(401).json({ error: 'This account is inactive.' });
+    if ((claims.sv ?? 0) !== user.session_version) return res.status(401).json({ error: 'Your session has expired. Please sign in again.' });
     req.user = user;
     next();
   } catch { return res.status(401).json({ error: 'Your session has expired. Please sign in again.' }); }

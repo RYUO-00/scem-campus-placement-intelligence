@@ -1,0 +1,37 @@
+%PDF-1.4
+% test fixture
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 48 >>
+stream
+BT /F1 18 Tf 50 700 Td (Encrypted fixture) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Filter /Standard /V 1 /R 2 /Length 40 /O <876b654cd6a0fbe737cf48e29762e015da8469f22a4f2ece596fdea28ec037a5> /U <8c4ff8c0077a61e54207ad08a3fc71db> /P -4 >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000024 00000 n 
+0000000073 00000 n 
+0000000130 00000 n 
+0000000256 00000 n 
+0000000326 00000 n 
+0000000424 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Encrypt 6 0 R /ID [<1234567890abcdef1234567890abcdef> <1234567890abcdef1234567890abcdef>] >>
+startxref
+598
+%%EOF

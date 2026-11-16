@@ -18,7 +18,7 @@ app.use(helmet({crossOriginResourcePolicy:{policy:'same-site'}}));
 app.use(cors({origin:process.env.FRONTEND_ORIGIN||'http://localhost:5173',credentials:true}));
 app.use(express.json({limit:'100kb'}));
 app.use(cookieParser());
-app.use('/api/auth',rateLimit({windowMs:15*60*1000,limit:30,standardHeaders:true,legacyHeaders:false}),authRoutes);
+app.use('/api/auth',rateLimit({windowMs:15*60*1000,limit:30,standardHeaders:true,legacyHeaders:false,skip:(req)=>req.path.startsWith('/password-reset/')}),authRoutes);
 app.get('/api/health',async(req,res)=>{try{await pool.query('SELECT 1');res.json({status:'ok',database:'connected',institution:'Sahyadri College of Engineering & Management'});}catch{res.status(503).json({status:'degraded',database:'unavailable'});}});
 app.get('/api/settings',async(req,res)=>{try{const {rows}=await pool.query("SELECT setting_value FROM college_settings WHERE setting_key='institution'");res.json({institution:rows[0]?.setting_value||{name:'Sahyadri College of Engineering & Management',shortName:'SCEM',footer:'Academic Project Prototype | Sahyadri College of Engineering & Management'}});}catch{res.status(503).json({error:'Institution settings are unavailable.'});}});
 app.use('/api/students',studentRoutes);
