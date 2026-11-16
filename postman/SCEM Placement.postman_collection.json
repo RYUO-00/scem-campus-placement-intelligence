@@ -1,0 +1,73 @@
+{
+  "info": {
+    "_postman_id": "d76c20ab-33c1-4d67-8fbd-9d2a8d455129",
+    "name": "SCEM Campus Placement API",
+    "description": "Requests for the local academic prototype. Set baseUrl and test identities in the collection environment; Postman stores the HTTP-only session cookie in its cookie jar after login. Use synthetic records only.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000/api" },
+    { "key": "studentEmail", "value": "" },
+    { "key": "studentPassword", "value": "" },
+    { "key": "registrationNumber", "value": "" },
+    { "key": "studentName", "value": "" },
+    { "key": "officerEmail", "value": "" },
+    { "key": "officerPassword", "value": "" },
+    { "key": "driveId", "value": "" },
+    { "key": "applicationId", "value": "" },
+    { "key": "offerDecision", "value": "accepted" }
+  ],
+  "item": [
+    { "name": "Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+    {
+      "name": "Register student from synthetic roster",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"{{studentName}}\",\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\",\n  \"registrationNumber\": \"{{registrationNumber}}\"\n}" },
+        "url": "{{baseUrl}}/auth/register"
+      }
+    },
+    {
+      "name": "Student login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{studentEmail}}\",\n  \"password\": \"{{studentPassword}}\"\n}" },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    { "name": "My profile", "request": { "method": "GET", "url": "{{baseUrl}}/students/me" } },
+    { "name": "Available placement drives", "request": { "method": "GET", "url": "{{baseUrl}}/drives" } },
+    { "name": "Check drive eligibility", "request": { "method": "GET", "url": "{{baseUrl}}/drives/{{driveId}}/eligibility" } },
+    {
+      "name": "Apply to eligible drive",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": "{{baseUrl}}/drives/{{driveId}}/applications"
+      }
+    },
+    { "name": "My applications, interviews, and offers", "request": { "method": "GET", "url": "{{baseUrl}}/students/me/applications" } },
+    {
+      "name": "Respond to pending offer",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"{{offerDecision}}\"\n}" },
+        "url": "{{baseUrl}}/students/me/offers/{{applicationId}}"
+      }
+    },
+    {
+      "name": "Officer login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{officerEmail}}\",\n  \"password\": \"{{officerPassword}}\"\n}" },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    { "name": "Officer import history (officer cookie required)", "request": { "method": "GET", "url": "{{baseUrl}}/officer/students/imports" } }
+  ]
+}
