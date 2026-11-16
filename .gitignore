@@ -1,0 +1,16 @@
+node_modules/
+frontend/dist/
+backend/.env
+frontend/.env
+ai-service/.env
+*.env.local
+ai-service/.venv/
+ai-service/__pycache__/
+*.py[cod]
+uploads/
+coverage/
+.DS_Store
+Thumbs.db
+# Internal handoff notes are local working context, not project documentation.
+CHATGPT_HANDOFF_CHANGELOG.md
+docs/MEMORY.md
