@@ -7,13 +7,17 @@ Base URL: `http://localhost:4000/api`. Authentication uses an HTTP-only session 
 | Method and path | Access | Purpose |
 |---|---|---|
 | `POST /auth/register` | Public | Link an imported roster record and create a student account. Body: `{name,email,password,registrationNumber}`. The name, registration number, and email must match the import. |
-| `POST /auth/login` | Public | Body: `{email,password}`; role is read from the database. |
+| `POST /auth/login` | Public | Body: `{email,password,expectedRole?}`. The optional intended role (`student`, `placement_officer`, or `recruiter`) is checked against the database role; a mismatch returns 403 without issuing a session cookie. Authorization still uses the server-side database role. |
+| `POST /auth/password-reset/request` | Public | Body: `{email}`. Returns the same generic 202 response for existing and unknown addresses. When configured, an eligible account receives a 30-minute Mailtrap Email Sandbox link. No role is accepted. |
+| `POST /auth/password-reset/confirm` | Public | Body: `{token,password}`. A valid, unexpired, unused token changes the account password, invalidates that account's existing sessions, and preserves its role. Invalid or reused tokens are rejected. |
 | `POST /auth/logout` | Signed in | Clears the session cookie. |
 | `GET /auth/me` | Signed in | Current user and trusted role. |
 
+Password-reset requests are limited to 20 per IP per 15 minutes and three token issuances per account per hour; confirmations are limited to 10 per IP per 15 minutes. The raw token is sent only by sandbox email and never returned in the API response.
+
 ## Student
 
-`GET /students/me`, `PUT /students/me` (phone/resume text only), `POST /students/me/resume` (text or a `.txt` multipart file), `GET /students/me/academics`, and `GET /students/me/applications` are student-only. Academic records and eligibility fields are read-only to students. `POST /students/claim-record` requires an authenticated student and exact roster name, registration number, and imported contact email.
+`GET /students/me`, `PUT /students/me` (phone/resume text only), `POST /students/me/resume` (text or a `.txt`, `.pdf`, or `.docx` multipart file), `GET /students/me/academics`, and `GET /students/me/applications` are student-only. Resume uploads are limited to 2 MB; extracted text is limited to 30,000 characters and returned in the response so the student can review it. PDF resumes are limited to 100 pages. Scanned PDFs needing OCR and password-protected/corrupt documents are rejected with a useful error. Binary uploads are parsed in memory and are not stored. Academic records and eligibility fields are read-only to students. `POST /students/claim-record` requires an authenticated student and exact roster name, registration number, and imported contact email. `PATCH /students/me/offers/:applicationId` accepts `{status:"accepted"}` or `{status:"declined"}` for a pending offer on the authenticated student's application; another student's offer and already-answered offers cannot be updated.
 
 ## Drives and applications
 
@@ -32,12 +36,14 @@ All `/officer/*` routes require `placement_officer`.
 |---|---|
 | `GET /officer/dashboard` | Live counts and recent drives. |
 | `GET /officer/students?q=&limit=&offset=` | Searchable roster directory. |
-| `GET /officer/students/template` | Download the CSV template. |
+| `POST /officer/student-groups` | Recompute K-Means groups from the current roster. Optional body `{nClusters:2..8}`; omit it to select a cluster count by silhouette score. Results are returned to the requesting officer and are not persisted. |
+| `GET /officer/students/template` | Download the canonical empty 4SF XLSX roster workbook. |
+| `GET /officer/registration-policy` | Read configured registration years, department mappings, and unresolved codes. |
 | `POST /officer/students/import/preview` | Multipart `file` (`.csv`/`.xlsx`, up to 5 MB); validates and stages rows. |
 | `POST /officer/students/import/confirm` | Body `{importId}`; commits insertable rows once before preview expiry. |
-| `GET /officer/students/imports` | Import history. |
-| `GET /officer/students/imports/:id` | Import summary. |
-| `GET /officer/students/imports/:id/errors` | Sanitized failed/skipped row details. |
+| `GET /officer/students/imports` | Import history for the authenticated officer. |
+| `GET /officer/students/imports/:id` | Import summary, only for its uploader. |
+| `GET /officer/students/imports/:id/errors` | Sanitized failed/skipped row details, only for its uploader. |
 | `GET /officer/branches` | Active branch choices for drive setup. |
 | `GET /officer/branches/all` | Active and inactive branch configuration. |
 | `POST /officer/branches` | Add a configurable branch (`branchCode`, `branchName`). |
@@ -59,6 +65,10 @@ All `/recruiter/*` routes use the server-side recruiter-to-company relation: `GE
 
 `GET /ai/health` reports matcher availability. `POST /ai/match/:driveId` is student-only and persists the authenticated student's result. `GET /ai/matches/:driveId` returns results only to the owner, placement officers, or that drive's assigned recruiter company. A score is textual similarity and does not affect eligibility.
 
+The internal FastAPI `POST http://localhost:8000/cluster` endpoint accepts at most 2,000 profiles containing only `cgpa`, `active_backlogs`, and `resume_text`, plus optional `n_clusters` from 2 to 8. Express calls it only after placement-officer authorization and maps returned input positions back to roster members. FastAPI rejects extra profile fields, so identifiers and contact data cannot be included accidentally. It returns `status: "insufficient_data"` with a reason when there are too few usable or distinct profiles. This internal endpoint is loopback-bound by the local runner and is not a user-facing public API.
+
 ## Status transitions
 
 Applications begin at `applied`. Officer/recruiter transitions are checked against the server allowlist in `backend/src/services/eligibility.js`. `rejected`, `offered`, and `withdrawn` are terminal. Only the placement officer creates offers; only a single offer can exist per application.
+
+Import history, summary, and error queries include the authenticated officer ID in SQL. An unknown or other officer's import ID returns 404. The integration suite verifies this ownership boundary.

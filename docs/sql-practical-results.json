@@ -1,0 +1,556 @@
+{
+  "generatedAt": "2026-10-20T07:15:32.875Z",
+  "environment": {
+    "database": "scem_placement_test",
+    "postgresVersion": "18.6",
+    "databaseUser": "postgres",
+    "runner": "PostgreSQL SQL practical runner"
+  },
+  "fixture": {
+    "label": "SQLPRACTICAL-E8226682FB1F",
+    "syntheticRosterStudents": 3,
+    "syntheticQueryPlanStudents": 8000,
+    "syntheticQueryPlanDrives": 12
+  },
+  "migrations": [
+    {
+      "name": "001_initial.sql",
+      "status": "already applied"
+    },
+    {
+      "name": "002_audit_and_reporting.sql",
+      "status": "already applied"
+    },
+    {
+      "name": "003_allow_perfect_gpa.sql",
+      "status": "already applied"
+    },
+    {
+      "name": "003_recruiter_workflow_safety.sql",
+      "status": "already applied"
+    },
+    {
+      "name": "004_normalized_registration_number.sql",
+      "status": "already applied"
+    }
+  ],
+  "summary": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "unverified": 0
+  },
+  "cases": [
+    {
+      "id": "Q01",
+      "purpose": "Create a temporary work table for the practical",
+      "status": "passed",
+      "command": "CREATE",
+      "rowCount": null,
+      "rows": [],
+      "returnedRowCount": 0
+    },
+    {
+      "id": "Q02",
+      "purpose": "Insert synthetic work rows and return their generated keys",
+      "status": "passed",
+      "command": "INSERT",
+      "rowCount": 3,
+      "rows": [
+        {
+          "note_id": "1",
+          "label": "update-me"
+        },
+        {
+          "note_id": "2",
+          "label": "delete-me"
+        },
+        {
+          "note_id": "3",
+          "label": "keep-me"
+        }
+      ],
+      "returnedRowCount": 3
+    },
+    {
+      "id": "Q03",
+      "purpose": "Filter and sort the imported synthetic student roster",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 3,
+      "rows": [
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-002",
+          "full_name": "Synthetic SQL Student 2",
+          "branch_code": "CSE",
+          "cgpa": "9.25"
+        },
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-001",
+          "full_name": "Synthetic SQL Student 1",
+          "branch_code": "CSE",
+          "cgpa": "8.75"
+        },
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-003",
+          "full_name": "Synthetic SQL Student 3",
+          "branch_code": "CSE",
+          "cgpa": "7.00"
+        }
+      ],
+      "returnedRowCount": 3
+    },
+    {
+      "id": "Q04",
+      "purpose": "Update one synthetic work row and return the changed value",
+      "status": "passed",
+      "command": "UPDATE",
+      "rowCount": 1,
+      "rows": [
+        {
+          "note_id": "1",
+          "label": "update-me",
+          "note": "Updated synthetic note"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q05",
+      "purpose": "INNER JOIN applications to students, drives, and companies",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 3,
+      "rows": [
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-001",
+          "full_name": "Synthetic SQL Student 1",
+          "role": "SQL Practical Demonstration Role 1",
+          "status": "applied",
+          "company_name": "SQL Practical Synthetic E8226682FB1F"
+        },
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-002",
+          "full_name": "Synthetic SQL Student 2",
+          "role": "SQL Practical Demonstration Role 1",
+          "status": "shortlisted",
+          "company_name": "SQL Practical Synthetic E8226682FB1F"
+        },
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-002",
+          "full_name": "Synthetic SQL Student 2",
+          "role": "SQL Practical Demonstration Role 2",
+          "status": "under_review",
+          "company_name": "SQL Practical Synthetic E8226682FB1F"
+        }
+      ],
+      "returnedRowCount": 3
+    },
+    {
+      "id": "Q06",
+      "purpose": "LEFT JOIN all branches to their current synthetic roster count",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "branch_code": "CSE",
+          "student_count": 8003
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q07",
+      "purpose": "Use NOT EXISTS to find a student without an application",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-003",
+          "full_name": "Synthetic SQL Student 3"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q08",
+      "purpose": "GROUP BY application status for one synthetic drive",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 2,
+      "rows": [
+        {
+          "status": "applied",
+          "application_count": 1
+        },
+        {
+          "status": "shortlisted",
+          "application_count": 1
+        }
+      ],
+      "returnedRowCount": 2
+    },
+    {
+      "id": "Q09",
+      "purpose": "HAVING retains only the synthetic company with applicants",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "company_name": "SQL Practical Synthetic E8226682FB1F",
+          "application_count": 24003
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q10",
+      "purpose": "Count and summarize package values for synthetic offers",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "offer_count": 1,
+          "average_lpa": "12.50",
+          "minimum_lpa": "12.50",
+          "maximum_lpa": "12.50"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q11",
+      "purpose": "Scalar subquery ranks synthetic drives by applicant count",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 3,
+      "rows": [
+        {
+          "role": "SQL Practical Plan Role 01",
+          "applicant_count": 2000
+        },
+        {
+          "role": "SQL Practical Plan Role 02",
+          "applicant_count": 2000
+        },
+        {
+          "role": "SQL Practical Plan Role 03",
+          "applicant_count": 2000
+        }
+      ],
+      "returnedRowCount": 3
+    },
+    {
+      "id": "Q12",
+      "purpose": "Create a temporary view over the migrated placement report view",
+      "status": "passed",
+      "command": "CREATE",
+      "rowCount": null,
+      "rows": [],
+      "returnedRowCount": 0
+    },
+    {
+      "id": "Q13",
+      "purpose": "Read the drive summary view for the synthetic company",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 15,
+      "rows": [
+        {
+          "role": "SQL Practical Demonstration Role 1",
+          "drive_status": "published",
+          "application_count": 2,
+          "shortlisted_count": 1,
+          "offer_count": 1,
+          "accepted_offer_count": 1,
+          "average_offer_lpa": "12.50"
+        },
+        {
+          "role": "SQL Practical Demonstration Role 2",
+          "drive_status": "published",
+          "application_count": 1,
+          "shortlisted_count": 0,
+          "offer_count": 0,
+          "accepted_offer_count": 0,
+          "average_offer_lpa": null
+        },
+        {
+          "role": "SQL Practical Demonstration Role 3",
+          "drive_status": "published",
+          "application_count": 0,
+          "shortlisted_count": 0,
+          "offer_count": 0,
+          "accepted_offer_count": 0,
+          "average_offer_lpa": null
+        },
+        {
+          "role": "SQL Practical Plan Role 01",
+          "drive_status": "published",
+          "application_count": 2000,
+          "shortlisted_count": 0,
+          "offer_count": 0,
+          "accepted_offer_count": 0,
+          "average_offer_lpa": null
+        },
+        {
+          "role": "SQL Practical Plan Role 02",
+          "drive_status": "published",
+          "application_count": 2000,
+          "shortlisted_count": 0,
+          "offer_count": 0,
+          "accepted_offer_count": 0,
+          "average_offer_lpa": null
+        }
+      ],
+      "returnedRowCount": 15
+    },
+    {
+      "id": "Q14",
+      "purpose": "Rank drive applicants by GPA with a window function",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 2,
+      "rows": [
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-002",
+          "cgpa": "9.25",
+          "gpa_rank": "1"
+        },
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-001",
+          "cgpa": "8.75",
+          "gpa_rank": "2"
+        }
+      ],
+      "returnedRowCount": 2
+    },
+    {
+      "id": "Q15",
+      "purpose": "Replace the drive/status index inside a rollback-only plan experiment",
+      "status": "passed",
+      "command": "DROP → DROP → CREATE",
+      "rowCount": null,
+      "rows": [],
+      "returnedRowCount": 0
+    },
+    {
+      "id": "Q16",
+      "purpose": "Refresh planner statistics for the synthetic applications",
+      "status": "passed",
+      "command": "ANALYZE",
+      "rowCount": null,
+      "rows": [],
+      "returnedRowCount": 0
+    },
+    {
+      "id": "Q17",
+      "purpose": "Capture an actual placement status query plan",
+      "status": "passed",
+      "command": "EXPLAIN",
+      "rowCount": null,
+      "rows": [
+        {
+          "QUERY PLAN": "GroupAggregate  (cost=8.46..63.02 rows=1 width=12) (actual time=0.214..0.215 rows=1.00 loops=1)"
+        },
+        {
+          "QUERY PLAN": "  Buffers: shared hit=3 read=4, local hit=2"
+        },
+        {
+          "QUERY PLAN": "  InitPlan 1"
+        },
+        {
+          "QUERY PLAN": "    ->  Index Scan using sql_practical_context_pkey on sql_practical_context  (cost=0.15..8.17 rows=1 width=16) (actual time=0.011..0.011 rows=1.00 loops=1)"
+        },
+        {
+          "QUERY PLAN": "          Index Cond: (key = 'plan_drive_id'::text)"
+        }
+      ],
+      "returnedRowCount": 16
+    },
+    {
+      "id": "Q18",
+      "purpose": "Read one synthetic import batch using its owner-scoped key",
+      "status": "passed",
+      "command": "SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "original_filename": "sql-practical-E8226682FB1F.csv",
+          "total_rows": 3,
+          "inserted_rows": 2,
+          "skipped_rows": 0,
+          "failed_rows": 1,
+          "status": "completed"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q19",
+      "purpose": "Insert one valid semester record for a synthetic student",
+      "status": "passed",
+      "command": "INSERT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "semester": 2,
+          "sgpa": "9.25",
+          "backlogs": 0
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q20",
+      "purpose": "Exercise the database updated_at trigger with direct SQL",
+      "status": "passed",
+      "command": "UPDATE",
+      "rowCount": 1,
+      "rows": [
+        {
+          "updated_at": "2026-10-20T07:17:00.640Z"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q21",
+      "purpose": "Commit status and interview changes together",
+      "status": "passed",
+      "command": "BEGIN → UPDATE → INSERT → COMMIT",
+      "rowCount": null,
+      "rows": [],
+      "returnedRowCount": 0,
+      "evidence": {
+        "status": "under_review",
+        "interview_count": 1
+      }
+    },
+    {
+      "id": "Q22",
+      "purpose": "Roll back a synthetic GPA update and read the original value",
+      "status": "passed",
+      "command": "BEGIN → UPDATE → ROLLBACK → SELECT",
+      "rowCount": 1,
+      "rows": [
+        {
+          "registration_number": "SQLPRACTICAL-E8226682FB1F-R-001",
+          "cgpa": "8.75"
+        }
+      ],
+      "returnedRowCount": 1,
+      "evidence": {
+        "observedCgpaAfterRollback": "8.75"
+      }
+    },
+    {
+      "id": "Q23",
+      "purpose": "Delete only the synthetic row created for this DELETE example",
+      "status": "passed",
+      "command": "DELETE",
+      "rowCount": 1,
+      "rows": [
+        {
+          "note_id": "2",
+          "label": "delete-me"
+        }
+      ],
+      "returnedRowCount": 1
+    },
+    {
+      "id": "Q24",
+      "purpose": "Confirm exact registration duplicates are rejected",
+      "status": "passed",
+      "expectedError": "23505",
+      "actualError": "23505",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q25",
+      "purpose": "Confirm case-variant registration duplicates are rejected",
+      "status": "passed",
+      "expectedError": "23505",
+      "actualError": "23505",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q26",
+      "purpose": "Confirm invalid company foreign keys are rejected",
+      "status": "passed",
+      "expectedError": "23503",
+      "actualError": "23503",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q27",
+      "purpose": "Confirm CGPA above ten is rejected by the database",
+      "status": "passed",
+      "expectedError": "23514",
+      "actualError": "23514",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q28",
+      "purpose": "Confirm unsupported user roles are rejected by the database",
+      "status": "passed",
+      "expectedError": "23514",
+      "actualError": "23514",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q29",
+      "purpose": "Confirm unsupported application statuses are rejected by the database",
+      "status": "passed",
+      "expectedError": "23514",
+      "actualError": "23514",
+      "rowCount": 0,
+      "rows": []
+    },
+    {
+      "id": "Q30",
+      "purpose": "Confirm a required company name cannot be NULL",
+      "status": "passed",
+      "expectedError": "23502",
+      "actualError": "23502",
+      "rowCount": 0,
+      "rows": []
+    }
+  ],
+  "transactionEvidence": {
+    "commit": "verified: status and interview round committed together",
+    "rollback": "verified: original CGPA 8.75 remained after ROLLBACK"
+  },
+  "queryPlanEvidence": {
+    "index": "sql_practical_plan_drive_status",
+    "output": [
+      "GroupAggregate  (cost=8.46..63.02 rows=1 width=12) (actual time=0.214..0.215 rows=1.00 loops=1)",
+      "  Buffers: shared hit=3 read=4, local hit=2",
+      "  InitPlan 1",
+      "    ->  Index Scan using sql_practical_context_pkey on sql_practical_context  (cost=0.15..8.17 rows=1 width=16) (actual time=0.011..0.011 rows=1.00 loops=1)",
+      "          Index Cond: (key = 'plan_drive_id'::text)",
+      "          Index Searches: 1",
+      "          Buffers: local hit=2",
+      "  ->  Index Only Scan using sql_practical_plan_drive_status on applications  (cost=0.29..50.55 rows=1714 width=8) (actual time=0.043..0.150 rows=2000.00 loops=1)",
+      "        Index Cond: ((drive_id = (InitPlan 1).col1) AND (status = 'applied'::text))",
+      "        Heap Fetches: 6",
+      "        Index Searches: 1",
+      "        Buffers: shared hit=3 read=4, local hit=2",
+      "Planning:",
+      "  Buffers: shared hit=17 read=1",
+      "Planning Time: 0.228 ms",
+      "Execution Time: 0.242 ms"
+    ],
+    "indexUsed": true
+  },
+  "cleanup": "passed: all SQL practical synthetic rows removed",
+  "limitations": []
+}
